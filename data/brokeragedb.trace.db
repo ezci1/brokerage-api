@@ -1,0 +1,3 @@
+2024-11-03 20:41:01.897431+03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "users" not found (this database is empty); SQL statement:
+INSERT INTO "users" (id, name, username, password, is_enabled) VALUES (1, 'Admin User', 'admin', '{bcrypt}$2a$12$jb51wny082o22Hqq1uB78.8llHrSMLB6tcPCrteSjEdhiunowRWG2', true) [42104-224]
