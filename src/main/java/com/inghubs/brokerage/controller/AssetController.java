@@ -30,7 +30,7 @@ public class AssetController {
 		assetService.depositMoney(request);
 	}
 
-	@GetMapping
+	@PostMapping("withdraw")
 	public void withdrawMoney(@RequestBody WithdrawMoneyRequest request) {
 		assetService.withdrawMoney(request);
 	}

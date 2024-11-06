@@ -13,6 +13,7 @@ import com.inghubs.brokerage.dto.request.CreateOrderRequest;
 import com.inghubs.brokerage.dto.request.GetOrdersRequest;
 import com.inghubs.brokerage.repository.AssetRepository;
 import com.inghubs.brokerage.repository.OrderRepository;
+import com.inghubs.brokerage.service.MatchService;
 import com.inghubs.brokerage.service.OrderService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final AssetRepository assetRepository;
+    private final MatchService matchService;
     private final OrderMapper orderMapper;
 
     @Override
@@ -46,6 +48,8 @@ public class OrderServiceImpl implements OrderService {
         var order = orderMapper.mapRequestToOrder(request);
         order.setStatus(OrderStatus.PENDING);
         orderRepository.save(order);
+        
+        matchService.processOrder(order);
     }
 
 	private Asset getUpdatedAsset(CreateOrderRequest request) {
