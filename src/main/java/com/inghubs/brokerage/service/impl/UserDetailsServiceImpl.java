@@ -1,10 +1,11 @@
-package com.inghubs.brokerage.security;
+package com.inghubs.brokerage.service.impl;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.inghubs.brokerage.security.CustomUserDetails;
 import com.inghubs.brokerage.service.UserService;
 
 import jakarta.persistence.EntityNotFoundException;

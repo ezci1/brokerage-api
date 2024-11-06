@@ -32,7 +32,7 @@ public class OrderController {
 	}
 
 	@GetMapping
-	public List<Order> getOrders(@RequestBody GetOrdersRequest request) {
+	public List<Order> getOrders(GetOrdersRequest request) {
 		return orderService.getOrders(request);
 	}
 

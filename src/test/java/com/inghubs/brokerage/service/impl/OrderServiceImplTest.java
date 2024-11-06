@@ -27,6 +27,7 @@ import com.inghubs.brokerage.dto.request.CreateOrderRequest;
 import com.inghubs.brokerage.dto.request.GetOrdersRequest;
 import com.inghubs.brokerage.repository.AssetRepository;
 import com.inghubs.brokerage.repository.OrderRepository;
+import com.inghubs.brokerage.service.MatchService;
 
 class OrderServiceImplTest {
 
@@ -38,6 +39,9 @@ class OrderServiceImplTest {
 
     @Mock
     private AssetRepository assetRepository;
+
+    @Mock
+    private MatchService matchService;
 
     @Mock
     private OrderMapper orderMapper;
@@ -70,30 +74,35 @@ class OrderServiceImplTest {
     @Test
     @Transactional
     void testCreateOrder_BuyOrder_Success() {
-        CreateOrderRequest request = new CreateOrderRequest();
+        var order = new Order();
+
+        var request = new CreateOrderRequest();
         request.setCustomerId(1L);
         request.setSide(Side.BUY);
         request.setAssetName("BTC");
         request.setSize(BigDecimal.valueOf(1));
         request.setPricePerShare(BigDecimal.valueOf(100));
 
-        Asset fiatAsset = new Asset();
+        var fiatAsset = new Asset();
         fiatAsset.setUsableSize(BigDecimal.valueOf(150)); // Sufficient funds
 
         when(assetRepository.findByCustomerIdAndAssetName(1L, "TRY"))
                 .thenReturn(Optional.of(fiatAsset));
-        when(orderMapper.mapRequestToOrder(request)).thenReturn(new Order());
+		when(orderMapper.mapRequestToOrder(request)).thenReturn(order);
 
         orderService.createOrder(request);
 
         verify(assetRepository).save(fiatAsset);
         verify(orderRepository).save(any(Order.class));
+        verify(matchService).processOrder(order);
     }
 
     @Test
     @Transactional
     void testCreateOrder_SellOrder_Success() {
-        CreateOrderRequest request = new CreateOrderRequest();
+        var order = new Order();
+
+        var request = new CreateOrderRequest();
         request.setCustomerId(1L);
         request.setSide(Side.SELL);
         request.setAssetName("BTC");
@@ -104,12 +113,13 @@ class OrderServiceImplTest {
 
         when(assetRepository.findByCustomerIdAndAssetName(1L, "BTC"))
                 .thenReturn(Optional.of(asset));
-        when(orderMapper.mapRequestToOrder(request)).thenReturn(new Order());
+        when(orderMapper.mapRequestToOrder(request)).thenReturn(order);
 
         orderService.createOrder(request);
 
         verify(assetRepository).save(asset);
         verify(orderRepository).save(any(Order.class));
+        verify(matchService).processOrder(order);
     }
 
     @Test
